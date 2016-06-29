@@ -13,6 +13,7 @@
 		40995D5F1D22247E00264E4D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 40995D5E1D22247E00264E4D /* Assets.xcassets */; };
 		40995D621D22247E00264E4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40995D601D22247E00264E4D /* LaunchScreen.storyboard */; };
 		40995D6D1D22247E00264E4D /* swipe_navigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40995D6C1D22247E00264E4D /* swipe_navigationUITests.swift */; };
+		40995D781D22256E00264E4D /* EmbeddedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40995D771D22256E00264E4D /* EmbeddedViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		40995D681D22247E00264E4D /* swipe-navigationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swipe-navigationUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		40995D6C1D22247E00264E4D /* swipe_navigationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swipe_navigationUITests.swift; sourceTree = "<group>"; };
 		40995D6E1D22247E00264E4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		40995D771D22256E00264E4D /* EmbeddedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				40995D571D22247E00264E4D /* AppDelegate.swift */,
 				40995D591D22247E00264E4D /* ViewController.swift */,
+				40995D771D22256E00264E4D /* EmbeddedViewController.swift */,
 				40995D5B1D22247E00264E4D /* Main.storyboard */,
 				40995D5E1D22247E00264E4D /* Assets.xcassets */,
 				40995D601D22247E00264E4D /* LaunchScreen.storyboard */,
@@ -199,6 +202,7 @@
 			files = (
 				40995D5A1D22247E00264E4D /* ViewController.swift in Sources */,
 				40995D581D22247E00264E4D /* AppDelegate.swift in Sources */,
+				40995D781D22256E00264E4D /* EmbeddedViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
