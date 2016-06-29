@@ -40,12 +40,6 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
     private var leftContainerOffset: CGVector!
     private var rightContainerOffset: CGVector!
     
-    weak private var centerViewController: EmbeddedViewController?
-    weak private var topViewController: EmbeddedViewController?
-    weak private var bottomViewController: EmbeddedViewController?
-    weak private var leftViewController: EmbeddedViewController?
-    weak private var rightViewController: EmbeddedViewController?
-    
     // setting them to NO disables swiping to the view controller, try it!
     private var shouldshowTopViewController = true
     private var shouldShowBottomViewController = true

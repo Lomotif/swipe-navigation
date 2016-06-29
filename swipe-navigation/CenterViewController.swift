@@ -10,19 +10,19 @@ import UIKit
 
 class CenterViewController: EmbeddedViewController {
     
-    @IBAction func onTopButton(sender: UIButton) {
+    @IBAction private func onTopButton(sender: UIButton) {
         delegate?.onShowContainer(.Top, sender: sender)
     }
     
-    @IBAction func onBottomButton(sender: UIButton) {
+    @IBAction private func onBottomButton(sender: UIButton) {
         delegate?.onShowContainer(.Bottom, sender: sender)
     }
     
-    @IBAction func onLeftButton(sender: UIButton) {
+    @IBAction private func onLeftButton(sender: UIButton) {
         delegate?.onShowContainer(.Left, sender: sender)
     }
     
-    @IBAction func onRightButton(sender: UIButton) {
+    @IBAction private func onRightButton(sender: UIButton) {
         delegate?.onShowContainer(.Right, sender: sender)
     }
 }
