@@ -14,6 +14,7 @@
 		40995D621D22247E00264E4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 40995D601D22247E00264E4D /* LaunchScreen.storyboard */; };
 		40995D6D1D22247E00264E4D /* swipe_navigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40995D6C1D22247E00264E4D /* swipe_navigationUITests.swift */; };
 		40995D781D22256E00264E4D /* EmbeddedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40995D771D22256E00264E4D /* EmbeddedViewController.swift */; };
+		40995D7A1D23791300264E4D /* CenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40995D791D23791300264E4D /* CenterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		40995D6C1D22247E00264E4D /* swipe_navigationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swipe_navigationUITests.swift; sourceTree = "<group>"; };
 		40995D6E1D22247E00264E4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		40995D771D22256E00264E4D /* EmbeddedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmbeddedViewController.swift; sourceTree = "<group>"; };
+		40995D791D23791300264E4D /* CenterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CenterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				40995D571D22247E00264E4D /* AppDelegate.swift */,
 				40995D591D22247E00264E4D /* ViewController.swift */,
 				40995D771D22256E00264E4D /* EmbeddedViewController.swift */,
+				40995D791D23791300264E4D /* CenterViewController.swift */,
 				40995D5B1D22247E00264E4D /* Main.storyboard */,
 				40995D5E1D22247E00264E4D /* Assets.xcassets */,
 				40995D601D22247E00264E4D /* LaunchScreen.storyboard */,
@@ -201,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				40995D5A1D22247E00264E4D /* ViewController.swift in Sources */,
+				40995D7A1D23791300264E4D /* CenterViewController.swift in Sources */,
 				40995D581D22247E00264E4D /* AppDelegate.swift in Sources */,
 				40995D781D22256E00264E4D /* EmbeddedViewController.swift in Sources */,
 			);
@@ -392,6 +396,7 @@
 				40995D731D22247E00264E4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		40995D741D22247E00264E4D /* Build configuration list for PBXNativeTarget "swipe-navigationUITests" */ = {
 			isa = XCConfigurationList;
@@ -400,6 +405,7 @@
 				40995D761D22247E00264E4D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
