@@ -286,9 +286,9 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
                             showContainer(.Right)
                         }
                             
-                        // pulled left
+                        // pulled right
                         else {
-                            showContainer(.Left)
+                            showContainer(.Center)
                         }
                     }
                 }
