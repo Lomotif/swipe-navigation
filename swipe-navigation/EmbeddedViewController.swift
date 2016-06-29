@@ -8,21 +8,23 @@
 
 import UIKit
 
+// add more cases if needed
+enum Position {
+    case Center
+    case Top
+    case Bottom
+    case Left
+    case Right
+}
+
 protocol EmbeddedViewControllerDelegate: class {
     
-    func isCenterContainerActive() -> Bool
-    func isTopContainerActive() -> Bool
-    func isBottomContainerActive() -> Bool
-    func isLeftContainerActive() -> Bool
-    func isRightContainerActive() -> Bool
+    // delegate to provide information about other containers
+    func isContainerActive(position: Position) -> Bool
     
+    // delegate to handle containers events
     func onDone(sender: AnyObject)
-    
-    func onShowCenterContainer(sender: AnyObject)
-    func onShowTopContainer(sender: AnyObject)
-    func onShowBottomContainer(sender: AnyObject)
-    func onShowLeftContainer(sender: AnyObject)
-    func onShowRightContainer(sender: AnyObject)
+    func onShowContainer(position: Position, sender: AnyObject)
 }
 
 class EmbeddedViewController: UIViewController {

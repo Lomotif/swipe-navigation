@@ -52,6 +52,8 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
     private var shouldShowLeftViewController = true
     private var shouldShowRightviewController = true
     
+    private let swipeAnimateDuration = 0.2
+    
     override func viewDidLoad() {
         // embedded containers offset
         let frameWidth = view.frame.size.width;
@@ -83,113 +85,68 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
     }
     
     override func prefersStatusBarHidden() -> Bool {
-        
         // required for full screen, apparently
         return true;
     }
     
+    
+    
+    
     // MARK: - Containers
-    private func showCenterContainer() {
-        currentXOffset.constant = centerContainerOffset.dx
-        currentYOffset.constant = centerContainerOffset.dy
-        UIView.animateWithDuration(0.2) { 
+    private func showContainer(position: Position) {
+        let targetOffset: CGVector
+        switch position {
+        case .Center:
+            targetOffset = centerContainerOffset
+        case .Top:
+            targetOffset = topContainerOffset
+        case .Bottom:
+            targetOffset = bottomContainerOffset
+        case .Left:
+            targetOffset = leftContainerOffset
+        case .Right:
+            targetOffset = rightContainerOffset
+        }
+        
+        currentXOffset.constant = targetOffset.dx
+        currentYOffset.constant = targetOffset.dy
+        UIView.animateWithDuration(swipeAnimateDuration) {
             self.view.layoutIfNeeded()
         }
     }
     
-    private func showTopContainer() {
-        currentXOffset.constant = topContainerOffset.dx
-        currentYOffset.constant = topContainerOffset.dy
-        UIView.animateWithDuration(0.2) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    private func showBottomContainer() {
-        currentXOffset.constant = bottomContainerOffset.dx
-        currentYOffset.constant = bottomContainerOffset.dy
-        UIView.animateWithDuration(0.2) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    private func showLeftContainer() {
-        currentXOffset.constant = leftContainerOffset.dx
-        currentYOffset.constant = leftContainerOffset.dy
-        UIView.animateWithDuration(0.2) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    private func showRightContainer() {
-        currentXOffset.constant = rightContainerOffset.dx
-        currentYOffset.constant = rightContainerOffset.dy
-        UIView.animateWithDuration(0.2) {
-            self.view.layoutIfNeeded()
-        }
-    }
     
     
     
     // MARK: - EmbeddedViewcontrollerDelegate Conformance
-    func isCenterContainerActive() -> Bool {
-        let currentOffset = (currentXOffset.constant, currentYOffset.constant)
-        let targetOffset = (centerContainerOffset.dx, centerContainerOffset.dy)
+    func isContainerActive(position: Position) -> Bool {
+        let targetOffset: CGVector
+        switch position {
+        case .Center:
+            targetOffset = centerContainerOffset
+        case .Top:
+            targetOffset = topContainerOffset
+        case .Bottom:
+            targetOffset = bottomContainerOffset
+        case .Left:
+            targetOffset = leftContainerOffset
+        case .Right:
+            targetOffset = rightContainerOffset
+        }
         
-        return currentOffset == targetOffset
-    }
-    
-    func isTopContainerActive() -> Bool {
-        let currentOffset = (currentXOffset.constant, currentYOffset.constant)
-        let targetOffset = (topContainerOffset.dx, topContainerOffset.dy)
-        
-        return currentOffset == targetOffset
-    }
-    
-    func isBottomContainerActive() -> Bool {
-        let currentOffset = (currentXOffset.constant, currentYOffset.constant)
-        let targetOffset = (bottomContainerOffset.dx, bottomContainerOffset.dy)
-        
-        return currentOffset == targetOffset
-    }
-    
-    func isLeftContainerActive() -> Bool {
-        let currentOffset = (currentXOffset.constant, currentYOffset.constant)
-        let targetOffset = (leftContainerOffset.dx, leftContainerOffset.dy)
-        
-        return currentOffset == targetOffset
-    }
-    
-    func isRightContainerActive() -> Bool {
-        let currentOffset = (currentXOffset.constant, currentYOffset.constant)
-        let targetOffset = (leftContainerOffset.dx, leftContainerOffset.dy)
-        
-        return currentOffset == targetOffset
+        return (currentXOffset.constant, currentYOffset.constant) == (targetOffset.dx, targetOffset.dy)
     }
     
     func onDone(sender: AnyObject) {
-        showCenterContainer()
+        showContainer(.Center)
     }
     
-    func onShowCenterContainer(sender: AnyObject) {
-        showCenterContainer()
+    func onShowContainer(position: Position, sender: AnyObject) {
+        showContainer(position)
     }
     
-    func onShowTopContainer(sender: AnyObject) {
-        showTopContainer()
-    }
     
-    func onShowBottomContainer(sender: AnyObject) {
-        showBottomContainer()
-    }
     
-    func onShowLeftContainer(sender: AnyObject) {
-        showLeftContainer()
-    }
-    
-    func onShowRightContainer(sender: AnyObject) {
-        showRightContainer()
-    }
     
     // MARK: - Pan Gestures
     // called before touchesBegan:withEvent: is called on the gesture recognizer for a new touch. return NO to prevent the gesture recognizer from seeing this touch
@@ -209,9 +166,9 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
              * - either set _activePanDirection in showXXXContainers or set it here
              */
             
-            if isBottomContainerActive() || isTopContainerActive() {
+            if isContainerActive(.Top) || isContainerActive(.Bottom) {
                 activePanDirection = .Vertical
-            } else if isLeftContainerActive() || isRightContainerActive() {
+            } else if isContainerActive(.Left) || isContainerActive(.Right) {
                 activePanDirection = .Horizontal
             } else {
                 activePanDirection = .Undefined
@@ -284,24 +241,24 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
                     
                     // within range of center container
                     if currentXOffset.constant < (horizontalSnapThresholdFraction * view.frame.size.width) {
-                        showCenterContainer()
+                        showContainer(.Center)
                     }
                     
                     // within range of left container
                     else if currentXOffset.constant > ((1.0 - horizontalSnapThresholdFraction) * view.frame.size.width) {
-                        showLeftContainer()
+                        showContainer(.Left)
                     }
                     
                     // center region: depends on inertia direction
                     else {
                         // pulled right
                         if previousNonZeroDirectionChange.dx > 0.0 {
-                            showLeftContainer()
+                            showContainer(.Left)
                         }
                         
                         // pulled left
                         else {
-                            showCenterContainer()
+                            showContainer(.Center)
                         }
                     }
                 }
@@ -320,24 +277,24 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
                     
                     // within range of center container
                     if currentXOffset.constant > (horizontalSnapThresholdFraction * -view.frame.size.width) {
-                        showCenterContainer()
+                        showContainer(.Center)
                     }
                         
                     // within range of right container
                     else if currentXOffset.constant < ((1.0 - horizontalSnapThresholdFraction) * -view.frame.size.width) {
-                        showRightContainer()
+                        showContainer(.Right)
                     }
                         
                     // center region: depends on inertia direction
                     else {
                         // pulled left
                         if previousNonZeroDirectionChange.dx < 0.0 {
-                            showRightContainer()
+                            showContainer(.Right)
                         }
                             
                         // pulled left
                         else {
-                            showCenterContainer()
+                            showContainer(.Left)
                         }
                     }
                 }
@@ -358,24 +315,24 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
                     
                     // within range of center container
                     if currentYOffset.constant < (verticalSnapThresholdFraction * view.frame.size.height) {
-                        showCenterContainer()
+                        showContainer(.Center)
                     }
                         
                     // within range of top container
                     else if currentYOffset.constant > ((1.0 - verticalSnapThresholdFraction) * view.frame.size.height) {
-                        showTopContainer()
+                        showContainer(.Top)
                     }
                         
                     // center region: depends on inertia direction
                     else {
                         // pulled down
                         if previousNonZeroDirectionChange.dy > 0.0 {
-                            showTopContainer()
+                            showContainer(.Top)
                         }
                             
                         // pulled up
                         else {
-                            showCenterContainer()
+                            showContainer(.Center)
                         }
                     }
                 }
@@ -394,24 +351,24 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
                     
                     // within range of center container
                     if currentYOffset.constant > (verticalSnapThresholdFraction * -view.frame.size.height) {
-                        showCenterContainer()
+                        showContainer(.Center)
                     }
                         
                     // within range of bottom container
                     else if currentYOffset.constant < ((1.0 - verticalSnapThresholdFraction) * -view.frame.size.height) {
-                        showBottomContainer()
+                        showContainer(.Bottom)
                     }
                         
                     // center region: depends on inertia direction
                     else {
                         // pulled up
                         if previousNonZeroDirectionChange.dy < 0.0 {
-                            showBottomContainer()
+                            showContainer(.Bottom)
                         }
                             
                         // pulled down
                         else {
-                            showCenterContainer()
+                            showContainer(.Center)
                         }
                     }
                 }
@@ -424,6 +381,10 @@ class ViewController: UIViewController, EmbeddedViewControllerDelegate, UIGestur
             break
         }
     }
+    
+    
+    
+    
     
     /*
      * MARK: - Navigation
