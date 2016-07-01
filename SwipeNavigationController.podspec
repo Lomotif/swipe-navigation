@@ -3,9 +3,9 @@ Pod::Spec.new do |s|
     s.platform = :ios
     s.ios.deployment_target = '8.0'
     s.name = "SwipeNavigationController"
-    s.summary = "Snapchat style 4 ways swipe."
+    s.summary = "Snapchat like 4-way swipe navigation in Swift for iOS."
     s.requires_arc = true
-    s.version = "0.1.2"
+    s.version = "1.0"
     s.license = { :type => "MIT", :file => "LICENSE" }
     s.author = { "Casey Law" => "casey@lomotif.com" }
     s.homepage = "http://www.lomotif.com"
