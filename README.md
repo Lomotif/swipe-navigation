@@ -1,14 +1,15 @@
+# SwipeNavigationController
 SwipeNavigationController is a Snapchat like 4-way swipe navigation in Swift for iOS
 
 Feel free to contribute by submiting PRs!
 
 # Installation
-If install using cocoapods, type this on the command line:
+If install using cocoapods, include this in your pod file and run ```pod install```:
 ```ruby
-$ pod install SwipeNavigationController
+pod 'SwipeNavigationController'
 ```
 
-Carthage is not supported yet.
+Carthage is currently not supported.
 
 # Usage
 In your code, ```import SwipeNavigationController```, and create a SwipeNavigationController that enables 4 directions swipe navigation: 
