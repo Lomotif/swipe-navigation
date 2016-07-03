@@ -43,6 +43,8 @@ public class SwipeNavigationController: UIViewController {
     @IBOutlet private var currentXOffset: NSLayoutConstraint!
     @IBOutlet private var currentYOffset: NSLayoutConstraint!
     
+    public private(set) weak var activeViewController: UIViewController!
+    
     // Mark: View controllers
     public private(set) var centerViewController: UIViewController!
     
@@ -50,41 +52,37 @@ public class SwipeNavigationController: UIViewController {
     public var topViewController: UIViewController? {
         willSet(newValue) {
             self.shouldshowTopViewController = newValue != nil
-            topViewController?.view.removeFromSuperview()
             guard let viewController = newValue else {
                 return
             }
-            addEmbeddedViewController(viewController, position: .Top)
+            addEmbeddedViewController(viewController, previousViewController: topViewController, position: .Top)
         }
     }
     public var bottomViewController: UIViewController? {
         willSet(newValue) {
             self.shouldShowBottomViewController = newValue != nil
-            bottomViewController?.view.removeFromSuperview()
             guard let viewController = newValue else {
                 return
             }
-            addEmbeddedViewController(viewController, position: .Bottom)
+            addEmbeddedViewController(viewController, previousViewController: bottomViewController, position: .Bottom)
         }
     }
     public var leftViewController: UIViewController? {
         willSet(newValue) {
             self.shouldShowLeftViewController = newValue != nil
-            leftViewController?.view.removeFromSuperview()
             guard let viewController = newValue else {
                 return
             }
-            addEmbeddedViewController(viewController, position: .Left)
+            addEmbeddedViewController(viewController, previousViewController: leftViewController, position: .Left)
         }
     }
     public var rightViewController: UIViewController? {
         willSet(newValue) {
             self.shouldShowRightviewController = newValue != nil
-            rightViewController?.view.removeFromSuperview()
             guard let viewController = newValue else {
                 return
             }
-            addEmbeddedViewController(viewController, position: .Right)
+            addEmbeddedViewController(viewController, previousViewController: rightViewController, position: .Right)
         }
     }
     
@@ -120,6 +118,8 @@ public class SwipeNavigationController: UIViewController {
         shouldShowLeftViewController = false
         shouldShowRightviewController = false
         self.centerViewController = centerViewController
+        addChildViewController(centerViewController)
+        centerViewController.didMoveToParentViewController(self)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -128,8 +128,10 @@ public class SwipeNavigationController: UIViewController {
     
     // Mark: - Functions
     public override func viewDidLoad() {
-        //
-        if currentXOffset == nil || currentYOffset == nil {
+        super.viewDidLoad()
+        
+        // if currentXOffset or currentYOffset is not set
+        if currentXOffset == nil && currentYOffset == nil {
             view.addSubview(centerViewController.view)
             centerViewController.view.translatesAutoresizingMaskIntoConstraints = false
             centerViewController.view.backgroundColor = UIColor.blueColor()
@@ -139,6 +141,9 @@ public class SwipeNavigationController: UIViewController {
             view.addConstraints(sizeConstraints(forItem: centerViewController.view, toItem: view))
         }
         
+        assert(currentXOffset != nil && currentYOffset != nil, "both currentXOffset and currentYOffset must be set")
+        
+        // create pan gesture recognizer if it's nil
         if mainPanGesture == nil {
             mainPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanGestureTriggered(_:)))
             view.addGestureRecognizer(mainPanGesture)
@@ -153,50 +158,73 @@ public class SwipeNavigationController: UIViewController {
         bottomContainerOffset = CGVectorMake(centerContainerOffset.dx, centerContainerOffset.dy - frameHeight)
         leftContainerOffset = CGVectorMake(centerContainerOffset.dx + frameWidth, centerContainerOffset.dy)
         rightContainerOffset = CGVectorMake(centerContainerOffset.dx - frameWidth, centerContainerOffset.dy)
-    }
-    
-    public override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
         
+        // set default active view to center view
+        activeViewController = centerViewController
     }
     
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Hide navigation bar when navigating into this view controller
-        navigationController?.setNavigationBarHidden(true, animated: animated)
-        
-        // Disable "Back" title on the navigation bar in child view controller.
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .Plain, target: nil, action: nil)
+        activeViewController.beginAppearanceTransition(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        activeViewController.endAppearanceTransition()
     }
     
     public override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        // Show navigation bar when navigating away from this view controller.
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+        activeViewController.beginAppearanceTransition(false, animated: animated)
+    }
+    
+    public override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        activeViewController.endAppearanceTransition()
+    }
+    
+    // Manually call viewWillAppear, viewDidAppear, viewWillDisappear, viewDidDisappear function
+    public override func shouldAutomaticallyForwardAppearanceMethods() -> Bool {
+        return false
+    }
+    
+    // Let UIKit handle rotation forwarding calls
+    public override func shouldAutomaticallyForwardRotationMethods() -> Bool {
+        return true
     }
     
     // MARK: - Containers
     private func showContainer(position: Position) {
+        var disappearingViewController: UIViewController = centerViewController
         let targetOffset: CGVector
         switch position {
         case .Center:
+            disappearingViewController = activeViewController
+            activeViewController = centerViewController
             targetOffset = centerContainerOffset
         case .Top:
+            activeViewController = topViewController
             targetOffset = topContainerOffset
         case .Bottom:
+            activeViewController = bottomViewController
             targetOffset = bottomContainerOffset
         case .Left:
+            activeViewController = leftViewController
             targetOffset = leftContainerOffset
         case .Right:
+            activeViewController = rightViewController
             targetOffset = rightContainerOffset
         }
         
         currentXOffset.constant = targetOffset.dx
         currentYOffset.constant = targetOffset.dy
-        UIView.animateWithDuration(swipeAnimateDuration) {
+        disappearingViewController.beginAppearanceTransition(false, animated: true)
+        activeViewController.beginAppearanceTransition(true, animated: true)
+        UIView.animateWithDuration(swipeAnimateDuration, animations: {
             self.view.layoutIfNeeded()
+        }) { (finished) in
+            self.activeViewController.endAppearanceTransition()
+            disappearingViewController.endAppearanceTransition()
         }
     }
     
@@ -439,6 +467,7 @@ public class SwipeNavigationController: UIViewController {
                     else {
                         // pulled up
                         if previousNonZeroDirectionChange.dy < 0.0 {
+                            
                             showContainer(.Bottom)
                         }
                             
@@ -459,9 +488,22 @@ public class SwipeNavigationController: UIViewController {
     }
     
     // Append embedded view to container view's view hierachy
-    func addEmbeddedViewController(viewController: UIViewController, position: Position) {
+    func addEmbeddedViewController(viewController: UIViewController, previousViewController: UIViewController?, position: Position) {
+        if viewController.isEqual(previousViewController) {
+            return
+        }
+        
+        previousViewController?.beginAppearanceTransition(false, animated: false)
+        previousViewController?.view.removeFromSuperview()
+        previousViewController?.endAppearanceTransition()
+        previousViewController?.willMoveToParentViewController(nil)
+        previousViewController?.removeFromParentViewController()
+        
+        addChildViewController(viewController)
         view.addSubview(viewController.view)
+        view.sendSubviewToBack(viewController.view)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        viewController.didMoveToParentViewController(self)
         view.addConstraint(alignCenterXConstraint(forItem: viewController.view, toItem: centerViewController.view, position: position))
         view.addConstraint(alignCenterYConstraint(forItem: viewController.view, toItem: centerViewController.view, position: position))
         view.addConstraints(sizeConstraints(forItem: viewController.view, toItem: centerViewController.view))
@@ -490,23 +532,4 @@ public class SwipeNavigationController: UIViewController {
         return [widthConstraint, heightConstraint]
     }
     
-    /*
-     * MARK: - Navigation
-     *
-     * - in a storyboard-based application, you will often want to do a little preparation before navigation
-     * - in this case, prepareForSegue will be triggered on load due to embedded segues
-     */
-    public override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        // for EmbeddedViewControllers are embedded in UINavigationControllers
-//        if let navController = segue.destinationViewController as? UINavigationController,
-//            embeddedViewController = navController.topViewController as? EmbeddedViewController {
-//            embeddedViewController.delegate = self
-//        }
-//            // for EmbeddedViewControllers are NOT embedded in UINavigationControllers
-//        else if let embeddedViewController = segue.destinationViewController as? EmbeddedViewController {
-//            embeddedViewController.delegate = self
-//        }
-    }
-
 }
