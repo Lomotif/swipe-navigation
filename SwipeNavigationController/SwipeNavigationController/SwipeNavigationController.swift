@@ -22,7 +22,7 @@ enum ActivePanDirection {
     case Vertical
 }
 
-protocol EmbeddedViewControllerDelegate: class {
+public protocol EmbeddedViewControllerDelegate: class {
     // delegate to provide information about other containers
     func isContainerActive(position: Position) -> Bool
     
@@ -194,7 +194,7 @@ public class SwipeNavigationController: UIViewController {
     }
     
     // MARK: - Containers
-    private func showContainer(position: Position) {
+    public func showContainer(position: Position) {
         var disappearingViewController: UIViewController = centerViewController
         let targetOffset: CGVector
         switch position {
