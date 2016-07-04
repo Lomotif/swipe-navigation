@@ -8,9 +8,9 @@
 
 import UIKit
 
-extension UIViewController {
+public extension UIViewController {
     
-    var containerSwipeNavigationController: SwipeNavigationController? {
+    public var containerSwipeNavigationController: SwipeNavigationController? {
         get {
             var parentViewController = self.parentViewController
             while (parentViewController != nil) {
