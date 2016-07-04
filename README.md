@@ -6,7 +6,7 @@ Feel free to contribute by submiting PRs!
 # Installation
 If install using cocoapods, include this in your pod file and run ```pod install```:
 ```ruby
-pod 'SwipeNavigationController'
+pod 'SwipeNavigationController', '~> 1.0'
 ```
 
 Carthage is currently not supported.
@@ -26,6 +26,13 @@ swipeNavigationController.shouldShowTopViewController = false
 swipeNavigationController.shouldShowBottomViewController = false
 swipeNavigationController.shouldShowLeftViewController = false
 swipeNavigationController.shouldShowRightViewController = false
+```
+To show embedded view controller manually without using the gesture, in your center view controller use:
+```swift
+self.containerSwipeNavigationController.showEmbeddedView(.Top)
+self.containerSwipeNavigationController.showEmbeddedView(.Bottom)
+self.containerSwipeNavigationController.showEmbeddedView(.Left)
+self.containerSwipeNavigationController.showEmbeddedView(.Right)
 ```
 
 License
