@@ -195,11 +195,15 @@ public class SwipeNavigationController: UIViewController {
     
     // MARK: - Containers
     public func showEmbeddedView(position: Position) {
-        var disappearingViewController: UIViewController = centerViewController
+        weak var disappearingViewController: UIViewController?
         let targetOffset: CGVector
+        
         switch position {
         case .Center:
-            disappearingViewController = activeViewController
+            // if active view is center view, we are just doing snapping without switching to other embedded view, therefore disappearingViewController should be nil. Else, previous activeViewController value will be the disappearingViewController
+            if !activeViewController.isEqual(centerViewController) {
+                disappearingViewController = activeViewController
+            }
             activeViewController = centerViewController
             targetOffset = centerContainerOffset
         case .Top:
@@ -216,15 +220,20 @@ public class SwipeNavigationController: UIViewController {
             targetOffset = rightContainerOffset
         }
         
+        // if activeViewController value has changed, disappearingViewController will be centerViewController
+        if !activeViewController.isEqual(centerViewController) {
+            disappearingViewController = centerViewController
+        }
+        
         currentXOffset.constant = targetOffset.dx
         currentYOffset.constant = targetOffset.dy
-        disappearingViewController.beginAppearanceTransition(false, animated: true)
+        disappearingViewController?.beginAppearanceTransition(false, animated: true)
         activeViewController.beginAppearanceTransition(true, animated: true)
         UIView.animateWithDuration(swipeAnimateDuration, animations: {
             self.view.layoutIfNeeded()
         }) { (finished) in
             self.activeViewController.endAppearanceTransition()
-            disappearingViewController.endAppearanceTransition()
+            disappearingViewController?.endAppearanceTransition()
         }
     }
     
