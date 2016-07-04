@@ -11,6 +11,7 @@
 		C92538661D26486900B50183 /* SwipeNavigationController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C925385B1D26486800B50183 /* SwipeNavigationController.framework */; };
 		C925386B1D26486900B50183 /* SwipeNavigationControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C925386A1D26486900B50183 /* SwipeNavigationControllerTests.swift */; };
 		C92538761D2648BE00B50183 /* SwipeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92538751D2648BE00B50183 /* SwipeNavigationController.swift */; };
+		C92F6C261D29FF12000BC427 /* UIViewController+SwipeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92F6C251D29FF12000BC427 /* UIViewController+SwipeNavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		C925386A1D26486900B50183 /* SwipeNavigationControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeNavigationControllerTests.swift; sourceTree = "<group>"; };
 		C925386C1D26486900B50183 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C92538751D2648BE00B50183 /* SwipeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeNavigationController.swift; sourceTree = "<group>"; };
+		C92F6C251D29FF12000BC427 /* UIViewController+SwipeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+SwipeNavigationController.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 			children = (
 				C925385E1D26486900B50183 /* SwipeNavigationController.h */,
 				C92538751D2648BE00B50183 /* SwipeNavigationController.swift */,
+				C92F6C251D29FF12000BC427 /* UIViewController+SwipeNavigationController.swift */,
 				C92538601D26486900B50183 /* Info.plist */,
 			);
 			path = SwipeNavigationController;
@@ -198,6 +201,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C92538761D2648BE00B50183 /* SwipeNavigationController.swift in Sources */,
+				C92F6C261D29FF12000BC427 /* UIViewController+SwipeNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
