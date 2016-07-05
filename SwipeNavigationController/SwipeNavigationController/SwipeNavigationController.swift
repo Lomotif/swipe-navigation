@@ -516,7 +516,6 @@ public class SwipeNavigationController: UIViewController {
         view.addConstraint(alignCenterXConstraint(forItem: viewController.view, toItem: centerViewController.view, position: position))
         view.addConstraint(alignCenterYConstraint(forItem: viewController.view, toItem: centerViewController.view, position: position))
         view.addConstraints(sizeConstraints(forItem: viewController.view, toItem: centerViewController.view))
-        view.layoutIfNeeded()
     }
     
     // MARK: - Layout Constraints
