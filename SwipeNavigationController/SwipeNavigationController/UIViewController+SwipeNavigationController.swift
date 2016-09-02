@@ -12,12 +12,12 @@ public extension UIViewController {
     
     public var containerSwipeNavigationController: SwipeNavigationController? {
         get {
-            var parentViewController = self.parentViewController
+            var parentViewController = self.parent
             while (parentViewController != nil) {
                 if let swipeNavigationController = parentViewController as? SwipeNavigationController {
                     return swipeNavigationController
                 }
-                parentViewController = parentViewController?.parentViewController
+                parentViewController = parentViewController?.parent
             }
             return nil
         }
