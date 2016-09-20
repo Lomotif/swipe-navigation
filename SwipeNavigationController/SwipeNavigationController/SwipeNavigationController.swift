@@ -24,11 +24,11 @@ enum ActivePanDirection {
 
 public protocol EmbeddedViewControllerDelegate: class {
     // delegate to provide information about other containers
-    func isContainerActive(_ position: Position) -> Bool
+    func isContainerActive(position: Position) -> Bool
     
     // delegate to handle containers events
-    func onDone(_ sender: AnyObject)
-    func onshowEmbeddedView(_ position: Position, sender: AnyObject)
+    func onDone(sender: AnyObject)
+    func onshowEmbeddedView(position: Position, sender: AnyObject)
 }
 
 open class SwipeNavigationController: UIViewController {
@@ -152,7 +152,7 @@ open class SwipeNavigationController: UIViewController {
         
         // create pan gesture recognizer if it's nil
         if mainPanGesture == nil {
-            mainPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanGestureTriggered(_:)))
+            mainPanGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanGestureTriggered(sender:)))
             view.addGestureRecognizer(mainPanGesture)
         }
         
@@ -196,7 +196,7 @@ open class SwipeNavigationController: UIViewController {
     }
     
     // MARK: - Containers
-    open func showEmbeddedView(_ position: Position) {
+    open func showEmbeddedView(position: Position) {
         weak var disappearingViewController: UIViewController?
         let targetOffset: CGVector
         
@@ -240,7 +240,7 @@ open class SwipeNavigationController: UIViewController {
     }
     
     // MARK: - EmbeddedViewcontrollerDelegate Conformance
-    open func isContainerActive(_ position: Position) -> Bool {
+    open func isContainerActive(position: Position) -> Bool {
         let targetOffset: CGVector
         switch position {
         case .center:
@@ -258,12 +258,15 @@ open class SwipeNavigationController: UIViewController {
         return (currentXOffset.constant, currentYOffset.constant) == (targetOffset.dx, targetOffset.dy)
     }
     
-    func onDone(_ sender: AnyObject) {
-        showEmbeddedView(.center)
+    func onDone(sender: AnyObject) {
+        showEmbeddedView(position: .center)
     }
     
-    func onshowEmbeddedView(_ position: Position, sender: AnyObject) {
-        showEmbeddedView(position)
+    func onshowEmbeddedView(position: Position, sender: AnyObject) {
+        showEmbeddedView(position: position)
+        
+        
+        
     }
     
     // MARK: - Pan Gestures
@@ -272,7 +275,7 @@ open class SwipeNavigationController: UIViewController {
         return true
     }
     
-    @IBAction @objc fileprivate func onPanGestureTriggered(_ sender: UIPanGestureRecognizer) {
+    @IBAction @objc fileprivate func onPanGestureTriggered(sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:
             /* Restrict pan movement
@@ -283,9 +286,9 @@ open class SwipeNavigationController: UIViewController {
              * - either set _activePanDirection in showXXXContainers or set it here
              */
             
-            if isContainerActive(.top) || isContainerActive(.bottom) {
+            if isContainerActive(position: .top) || isContainerActive(position: .bottom) {
                 activePanDirection = .vertical
-            } else if isContainerActive(.left) || isContainerActive(.right) {
+            } else if isContainerActive(position: .left) || isContainerActive(position: .right) {
                 activePanDirection = .horizontal
             } else {
                 activePanDirection = .undefined
@@ -357,24 +360,24 @@ open class SwipeNavigationController: UIViewController {
                     
                     // within range of center container
                     if currentXOffset.constant < (horizontalSnapThresholdFraction * view.frame.size.width) {
-                        showEmbeddedView(.center)
+                        showEmbeddedView(position: .center)
                     }
                         
                         // within range of left container
                     else if currentXOffset.constant > ((1.0 - horizontalSnapThresholdFraction) * view.frame.size.width) {
-                        showEmbeddedView(.left)
+                        showEmbeddedView(position: .left)
                     }
                         
                         // center region: depends on inertia direction
                     else {
                         // pulled right
                         if previousNonZeroDirectionChange.dx > 0.0 {
-                            showEmbeddedView(.left)
+                            showEmbeddedView(position: .left)
                         }
                             
                             // pulled left
                         else {
-                            showEmbeddedView(.center)
+                            showEmbeddedView(position: .center)
                         }
                     }
                 }
@@ -393,24 +396,24 @@ open class SwipeNavigationController: UIViewController {
                     
                     // within range of center container
                     if currentXOffset.constant > (horizontalSnapThresholdFraction * -view.frame.size.width) {
-                        showEmbeddedView(.center)
+                        showEmbeddedView(position: .center)
                     }
                         
                         // within range of right container
                     else if currentXOffset.constant < ((1.0 - horizontalSnapThresholdFraction) * -view.frame.size.width) {
-                        showEmbeddedView(.right)
+                        showEmbeddedView(position: .right)
                     }
                         
                         // center region: depends on inertia direction
                     else {
                         // pulled left
                         if previousNonZeroDirectionChange.dx < 0.0 {
-                            showEmbeddedView(.right)
+                            showEmbeddedView(position: .right)
                         }
                             
                             // pulled right
                         else {
-                            showEmbeddedView(.center)
+                            showEmbeddedView(position: .center)
                         }
                     }
                 }
@@ -430,24 +433,24 @@ open class SwipeNavigationController: UIViewController {
                     
                     // within range of center container
                     if currentYOffset.constant < (verticalSnapThresholdFraction * view.frame.size.height) {
-                        showEmbeddedView(.center)
+                        showEmbeddedView(position: .center)
                     }
                         
                         // within range of top container
                     else if currentYOffset.constant > ((1.0 - verticalSnapThresholdFraction) * view.frame.size.height) {
-                        showEmbeddedView(.top)
+                        showEmbeddedView(position: .top)
                     }
                         
                         // center region: depends on inertia direction
                     else {
                         // pulled down
                         if previousNonZeroDirectionChange.dy > 0.0 {
-                            showEmbeddedView(.top)
+                            showEmbeddedView(position: .top)
                         }
                             
                             // pulled up
                         else {
-                            showEmbeddedView(.center)
+                            showEmbeddedView(position: .center)
                         }
                     }
                 }
@@ -466,12 +469,12 @@ open class SwipeNavigationController: UIViewController {
                     
                     // within range of center container
                     if currentYOffset.constant > (verticalSnapThresholdFraction * -view.frame.size.height) {
-                        showEmbeddedView(.center)
+                        showEmbeddedView(position: .center)
                     }
                         
                         // within range of bottom container
                     else if currentYOffset.constant < ((1.0 - verticalSnapThresholdFraction) * -view.frame.size.height) {
-                        showEmbeddedView(.bottom)
+                        showEmbeddedView(position: .bottom)
                     }
                         
                         // center region: depends on inertia direction
@@ -479,12 +482,12 @@ open class SwipeNavigationController: UIViewController {
                         // pulled up
                         if previousNonZeroDirectionChange.dy < 0.0 {
                             
-                            showEmbeddedView(.bottom)
+                            showEmbeddedView(position: .bottom)
                         }
                             
                             // pulled down
                         else {
-                            showEmbeddedView(.center)
+                            showEmbeddedView(position: .center)
                         }
                     }
                 }
