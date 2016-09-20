@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
     s.source = { :git => "https://github.com/Lomotif/swipe-navigation.git", :tag => "#{s.version}"}
     s.framework = 'UIKit'
     s.source_files = "SwipeNavigationController/SwipeNavigationController/*.{h,swift}"
+    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
     s.module_name = 'SwipeNavigationController'
 
 end
