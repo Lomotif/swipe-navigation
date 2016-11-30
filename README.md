@@ -35,10 +35,20 @@ swipeNavigationController.shouldShowRightViewController = false
 ```
 To show embedded view controller manually without using the gesture, in your center view controller use:
 ```swift
-self.containerSwipeNavigationController.showEmbeddedView(.Top)
-self.containerSwipeNavigationController.showEmbeddedView(.Bottom)
-self.containerSwipeNavigationController.showEmbeddedView(.Left)
-self.containerSwipeNavigationController.showEmbeddedView(.Right)
+self.containerSwipeNavigationController.showEmbeddedView(.top)
+self.containerSwipeNavigationController.showEmbeddedView(.bottom)
+self.containerSwipeNavigationController.showEmbeddedView(.left)
+self.containerSwipeNavigationController.showEmbeddedView(.right)
+```
+To receive callback when the embedded view moves to new position, your view controller will need to conform to SwipeNavigationControllerDelegate and implement the following functions:
+```swift
+/// Callback when embedded view started moving to new position
+func swipeNavigationController(_ controller: SwipeNavigationController, willShowEmbeddedViewForPosition position: Position) {
+}
+
+/// Callback when embedded view had moved to new position
+func swipeNavigationController(_ controller: SwipeNavigationController, didShowEmbeddedViewForPosition position: Position) {
+}
 ```
 
 License
