@@ -22,15 +22,27 @@ enum ActivePanDirection {
     case vertical
 }
 
-public protocol EmbeddedViewControllerDelegate: class {
-    // delegate to provide information about other containers
-    func isContainerActive(position: Position) -> Bool
+// MARK: - SwipeNavigationControllerDelegate
+/// SwipeNavigationControllerDelegate
+public protocol SwipeNavigationControllerDelegate: class {
     
-    // delegate to handle containers events
-    func onDone(sender: AnyObject)
-    func onshowEmbeddedView(position: Position, sender: AnyObject)
+    /// Inform delegate that the embedded view will navigation to new position
+    ///
+    /// - Parameters:
+    ///   - controller: Swipe navigation controller
+    ///   - position: New position
+    func swipeNavigationController(_ controller: SwipeNavigationController, willShowEmbeddedViewForPosition position: Position)
+    
+    /// Inform delegate that the embedded view had already navigated to new position
+    ///
+    /// - Parameters:
+    ///   - controller: Swipe navigation controller
+    ///   - position: New position
+    func swipeNavigationController(_ controller: SwipeNavigationController, didShowEmbeddedViewForPosition position: Position)
 }
 
+// MARK: - SwipeNavigationController
+/// SwipeNavigationController Class
 open class SwipeNavigationController: UIViewController {
     
     // Mark: - Properties
@@ -44,6 +56,8 @@ open class SwipeNavigationController: UIViewController {
     @IBOutlet fileprivate var currentYOffset: NSLayoutConstraint!
     
     open fileprivate(set) weak var activeViewController: UIViewController!
+    
+    public weak var delegate: SwipeNavigationControllerDelegate?
     
     // Mark: View controllers
     open fileprivate(set) var centerViewController: UIViewController!
@@ -141,7 +155,6 @@ open class SwipeNavigationController: UIViewController {
         if currentXOffset == nil && currentYOffset == nil {
             view.addSubview(centerViewController.view)
             centerViewController.view.translatesAutoresizingMaskIntoConstraints = false
-            centerViewController.view.backgroundColor = UIColor.blue
             self.currentXOffset = alignCenterXConstraint(forItem: centerViewController.view, toItem: view, position: .center)
             self.currentYOffset = alignCenterYConstraint(forItem: centerViewController.view, toItem: view, position: .center)
             view.addConstraints([self.currentXOffset, self.currentYOffset])
@@ -231,15 +244,16 @@ open class SwipeNavigationController: UIViewController {
         currentYOffset.constant = targetOffset.dy
         disappearingViewController?.beginAppearanceTransition(false, animated: true)
         activeViewController.beginAppearanceTransition(true, animated: true)
+        delegate?.swipeNavigationController(self, willShowEmbeddedViewForPosition: position)
         UIView.animate(withDuration: swipeAnimateDuration, animations: {
             self.view.layoutIfNeeded()
         }) { (finished) in
+            self.delegate?.swipeNavigationController(self, didShowEmbeddedViewForPosition: position)
             self.activeViewController.endAppearanceTransition()
             disappearingViewController?.endAppearanceTransition()
         }
     }
     
-    // MARK: - EmbeddedViewcontrollerDelegate Conformance
     open func isContainerActive(position: Position) -> Bool {
         let targetOffset: CGVector
         switch position {
@@ -254,19 +268,7 @@ open class SwipeNavigationController: UIViewController {
         case .right:
             targetOffset = rightContainerOffset
         }
-        
         return (currentXOffset.constant, currentYOffset.constant) == (targetOffset.dx, targetOffset.dy)
-    }
-    
-    func onDone(sender: AnyObject) {
-        showEmbeddedView(position: .center)
-    }
-    
-    func onshowEmbeddedView(position: Position, sender: AnyObject) {
-        showEmbeddedView(position: position)
-        
-        
-        
     }
     
     // MARK: - Pan Gestures
@@ -275,7 +277,7 @@ open class SwipeNavigationController: UIViewController {
         return true
     }
     
-    @IBAction @objc fileprivate func onPanGestureTriggered(sender: UIPanGestureRecognizer) {
+    @IBAction fileprivate func onPanGestureTriggered(sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:
             /* Restrict pan movement
