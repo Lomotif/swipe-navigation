@@ -65,7 +65,7 @@ open class SwipeNavigationController: UIViewController {
     // Append embedded view to container view's view hierachy
     open var topViewController: UIViewController? {
         willSet(newValue) {
-            self.shouldshowTopViewController = newValue != nil
+            self.shouldShowTopViewController = newValue != nil
             guard let viewController = newValue else {
                 return
             }
@@ -92,7 +92,7 @@ open class SwipeNavigationController: UIViewController {
     }
     open var rightViewController: UIViewController? {
         willSet(newValue) {
-            self.shouldShowRightviewController = newValue != nil
+            self.shouldShowRightViewController = newValue != nil
             guard let viewController = newValue else {
                 return
             }
@@ -123,10 +123,11 @@ open class SwipeNavigationController: UIViewController {
     fileprivate var rightContainerOffset: CGVector!
     
     // setting them to NO disables swiping to the view controller, try it!
-    open var shouldshowTopViewController = true
+    open var shouldShowTopViewController = true
     open var shouldShowBottomViewController = true
     open var shouldShowLeftViewController = true
-    open var shouldShowRightviewController = true
+    open var shouldShowRightViewController = true
+    open var shouldShowCenterViewController = true
     
     fileprivate let swipeAnimateDuration = 0.2
     
@@ -134,10 +135,10 @@ open class SwipeNavigationController: UIViewController {
     // Use this initializer if you are not using storyboard
     public init(centerViewController: UIViewController) {
         super.init(nibName: nil, bundle: nil)
-        shouldshowTopViewController = false
+        shouldShowTopViewController = false
         shouldShowBottomViewController = false
         shouldShowLeftViewController = false
-        shouldShowRightviewController = false
+        shouldShowRightViewController = false
         self.centerViewController = centerViewController
         addChildViewController(centerViewController)
         centerViewController.didMove(toParentViewController: self)
@@ -323,20 +324,23 @@ open class SwipeNavigationController: UIViewController {
                 // show container according to state OR if it's already showing through some other means (eg. button, etc)
                 let isCurrentlyShowingRightViewController = currentXOffset.constant < centerContainerOffset.dx
                 let isCurrentlyShowingLeftViewController = currentXOffset.constant > centerContainerOffset.dx
-                let minX = isCurrentlyShowingRightViewController || shouldShowRightviewController ? rightContainerOffset.dx : centerContainerOffset.dx
+                let minX = isCurrentlyShowingRightViewController || shouldShowRightViewController ? rightContainerOffset.dx : centerContainerOffset.dx
                 let maxX = isCurrentlyShowingLeftViewController || shouldShowLeftViewController ? leftContainerOffset.dx : centerContainerOffset.dx
                 
-                currentXOffset.constant = min(max(minX, currentXOffset.constant + translationInMainView.x), maxX)
-                
+                if shouldShowCenterViewController {
+                    currentXOffset.constant = min(max(minX, currentXOffset.constant + translationInMainView.x), maxX)
+                }
             case .vertical:
                 // restraint accordingly to state
                 // show container according to state OR if it's already showing through some other means (eg. button, etc)
                 let isCurrentlyShowingBottomViewController = currentYOffset.constant < centerContainerOffset.dy
                 let isCurrentlyShowingTopViewController = currentYOffset.constant > centerContainerOffset.dy
                 let minY = isCurrentlyShowingBottomViewController || shouldShowBottomViewController ? bottomContainerOffset.dy : centerContainerOffset.dy
-                let maxY = isCurrentlyShowingTopViewController || shouldshowTopViewController ? topContainerOffset.dy : centerContainerOffset.dy
+                let maxY = isCurrentlyShowingTopViewController || shouldShowTopViewController ? topContainerOffset.dy : centerContainerOffset.dy
                 
-                currentYOffset.constant = min(max(minY, currentYOffset.constant + translationInMainView.y), maxY)
+                if shouldShowCenterViewController {
+                    currentYOffset.constant = min(max(minY, currentYOffset.constant + translationInMainView.y), maxY)
+                }
             }
             
             // reset translation for next iteration
