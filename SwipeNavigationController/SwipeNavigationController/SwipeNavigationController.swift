@@ -273,6 +273,15 @@ open class SwipeNavigationController: UIViewController {
     }
     
     // MARK: - Pan Gestures
+    
+    // Methods to "lock and unlock" the swipe gestures
+    open func lock() {
+        self.mainPanGesture.isEnabled = false
+    }
+    open func unlock() {
+        self.mainPanGesture.isEnabled = true
+    }
+
     // called before touchesBegan:withEvent: is called on the gesture recognizer for a new touch. return NO to prevent the gesture recognizer from seeing this touch
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         return true
