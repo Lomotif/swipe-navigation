@@ -129,8 +129,6 @@ open class SwipeNavigationController: UIViewController {
     open var shouldShowRightViewController = true
     open var shouldShowCenterViewController = true
     
-    fileprivate let swipeAnimateDuration = 0.2
-    
     // Mark: - Initializers
     // Use this initializer if you are not using storyboard
     public init(centerViewController: UIViewController) {
@@ -210,7 +208,7 @@ open class SwipeNavigationController: UIViewController {
     }
     
     // MARK: - Containers
-    open func showEmbeddedView(position: Position) {
+    open func showEmbeddedView(position: Position, animationDuration: Double = 0.2) {
         weak var disappearingViewController: UIViewController?
         let targetOffset: CGVector
         
@@ -246,7 +244,7 @@ open class SwipeNavigationController: UIViewController {
         disappearingViewController?.beginAppearanceTransition(false, animated: true)
         activeViewController.beginAppearanceTransition(true, animated: true)
         delegate?.swipeNavigationController(self, willShowEmbeddedViewForPosition: position)
-        UIView.animate(withDuration: swipeAnimateDuration, animations: {
+        UIView.animate(withDuration: animationDuration, animations: {
             self.view.layoutIfNeeded()
         }) { (finished) in
             self.delegate?.swipeNavigationController(self, didShowEmbeddedViewForPosition: position)
