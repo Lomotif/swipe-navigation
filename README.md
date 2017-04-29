@@ -5,11 +5,11 @@ Feel free to contribute by submiting PRs!
 
 # Installation
 If install using cocoapods, include this in your pod file and run ```pod install```:
-##Swift 3.0:
+## Swift 3.0:
 ```ruby
 pod 'SwipeNavigationController', '~> 2.0.0'
 ```
-##Swift 2.3:
+## Swift 2.3:
 ```ruby
 pod 'SwipeNavigationController', '~> 1.1.0'
 ```
