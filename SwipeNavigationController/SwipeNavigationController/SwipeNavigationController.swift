@@ -140,8 +140,8 @@ open class SwipeNavigationController: UIViewController {
         shouldShowLeftViewController = false
         shouldShowRightViewController = false
         self.centerViewController = centerViewController
-        addChildViewController(centerViewController)
-        centerViewController.didMove(toParentViewController: self)
+        addChild(centerViewController)
+        centerViewController.didMove(toParent: self)
     }
     
     public required init?(coder aDecoder: NSCoder) {
@@ -525,14 +525,14 @@ open class SwipeNavigationController: UIViewController {
         previousViewController?.beginAppearanceTransition(false, animated: false)
         previousViewController?.view.removeFromSuperview()
         previousViewController?.endAppearanceTransition()
-        previousViewController?.willMove(toParentViewController: nil)
-        previousViewController?.removeFromParentViewController()
+        previousViewController?.willMove(toParent: nil)
+        previousViewController?.removeFromParent()
         
-        addChildViewController(viewController)
+        addChild(viewController)
         view.addSubview(viewController.view)
-        view.sendSubview(toBack: viewController.view)
+        view.sendSubviewToBack(viewController.view)
         viewController.view.translatesAutoresizingMaskIntoConstraints = false
-        viewController.didMove(toParentViewController: self)
+        viewController.didMove(toParent: self)
         view.addConstraint(alignCenterXConstraint(forItem: viewController.view, toItem: centerViewController.view, position: position))
         view.addConstraint(alignCenterYConstraint(forItem: viewController.view, toItem: centerViewController.view, position: position))
         view.addConstraints(sizeConstraints(forItem: viewController.view, toItem: centerViewController.view))
